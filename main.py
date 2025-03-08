@@ -17,8 +17,6 @@ def main():
         print("Listening for MIDI signals...")
         last_volume_value = None
         for msg in inport:
-            print(msg)
-        
             if msg.type == 'note_on':
                 if msg.note == PLAY_PAUSE_NOTE:
                     # Pause the currently playing media
@@ -34,11 +32,11 @@ def main():
                     ctypes.windll.user32.keybd_event(0xB0, 0, 2, 0)  # KEYEVENTF_KEYUP
             elif msg.type == 'control_change' and msg.control == VOL_CC:
                 if last_volume_value is not None:
-                    if msg.value > last_volume_value:
+                    if msg.value > last_volume_value or last_volume_value == 127:
                         # Volume up
                         ctypes.windll.user32.keybd_event(0xAF, 0, 0, 0)  # VK_VOLUME_UP
                         ctypes.windll.user32.keybd_event(0xAF, 0, 2, 0)  # KEYEVENTF_KEYUP
-                    elif msg.value < last_volume_value:
+                    elif msg.value < last_volume_value or last_volume_value == 0:
                         # Volume down
                         ctypes.windll.user32.keybd_event(0xAE, 0, 0, 0)  # VK_VOLUME_DOWN
                         ctypes.windll.user32.keybd_event(0xAE, 0, 2, 0)  # KEYEVENTF_KEYUP
